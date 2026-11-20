@@ -34,7 +34,9 @@ export default function RecipeGrid({ recipes }: { recipes: Recipe[] }) {
             {filteredRecipes.length === 0 ? (
                 <div className="rounded-xl border border-dashed border-neutral-300 bg-white p-8 text-center">
                     <p className="text-neutral-600">
-                        No recipes match <span className="font-semibold text-neutral-900">"{query}"</span>. Try another title or cuisine.
+                        No recipes match{" "}
+                        <span className="font-semibold text-neutral-900">"{query}"</span>.
+                        Try another title or cuisine.
                     </p>
                 </div>
             ) : (

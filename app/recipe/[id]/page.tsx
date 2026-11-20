@@ -1,32 +1,70 @@
 import Link from "next/link";
-import type { Recipe } from "@/app/data/recipes";
+import { notFound } from "next/navigation";
+import { getRecipe } from "@/app/data/recipes";
 
-export default function RecipeCard({ recipe }: { recipe: Recipe }) {
+export const instant = false;
+
+export default async function RecipeDetailPage({
+    params,
+}: {
+    params: Promise<{ id: string }>;
+}) {
+    const { id } = await params;
+    const recipe = getRecipe(id);
+
+    if (!recipe) {
+        notFound();
+    }
+
     return (
-        <Link
-            href={`/recipe/${recipe.id}`}
-            className="flex flex-col justify-between rounded-xl border border-neutral-200 bg-white p-5 shadow-sm transition hover:border-orange-300 hover:shadow-md"
-        >
-            <div>
-                <div className="mb-2 flex items-center justify-between text-xs font-medium text-neutral-500">
-                    <span className="rounded-full bg-orange-100 px-2.5 py-0.5 text-orange-800">
+        <article className="mx-auto max-w-2xl">
+            <Link
+                href="/"
+                className="mb-6 inline-block text-sm font-medium text-orange-600 hover:text-orange-700"
+            >
+                &larr; Back to all recipes
+            </Link>
+
+            <div className="mb-6">
+                <div className="mb-3 flex flex-wrap items-center gap-3 text-xs font-medium text-neutral-500">
+                    <span className="rounded-full bg-orange-100 px-3 py-1 text-orange-800">
                         {recipe.cuisine}
                     </span>
                     <span>{recipe.minutes} min</span>
+                    <span>Difficulty: {recipe.difficulty}</span>
                 </div>
 
-                <h2 className="mb-2 text-lg font-semibold text-neutral-900">
+                <h1 className="text-3xl font-bold tracking-tight text-neutral-900">
                     {recipe.title}
-                </h2>
-
-                <p className="text-sm leading-relaxed text-neutral-600">
-                    {recipe.description}
-                </p>
+                </h1>
+                <p className="mt-3 text-neutral-600">{recipe.description}</p>
             </div>
 
-            <div className="mt-4 border-t border-neutral-100 pt-3 text-xs font-medium text-neutral-500">
-                Difficulty: <span className="text-neutral-800">{recipe.difficulty}</span>
+            <div className="grid gap-8 rounded-xl border border-neutral-200 bg-white p-6 shadow-sm sm:p-8">
+                <section>
+                    <h2 className="mb-3 text-xl font-semibold text-neutral-900">
+                        Ingredients
+                    </h2>
+                    <ul className="list-disc space-y-2 pl-5 text-neutral-700">
+                        {recipe.ingredients.map((item, index) => (
+                            <li key={index}>{item}</li>
+                        ))}
+                    </ul>
+                </section>
+
+                <section>
+                    <h2 className="mb-3 text-xl font-semibold text-neutral-900">
+                        Steps
+                    </h2>
+                    <ol className="list-decimal space-y-3 pl-5 text-neutral-700">
+                        {recipe.steps.map((step, index) => (
+                            <li key={index} className="leading-relaxed">
+                                {step}
+                            </li>
+                        ))}
+                    </ol>
+                </section>
             </div>
-        </Link>
+        </article>
     );
 }
